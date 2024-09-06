@@ -1,6 +1,6 @@
 //
-//modified by: Jar
-//date: 08/26/24
+//modified by: Rajveer Khosa
+//date: 08/30/24
 //
 //original author: Gordon Griesel
 //date:            Fall 2024
@@ -30,6 +30,10 @@ public:
 	float w; 
 	float vel; 
 	float pos[2];
+
+	//	Flag to Check if Window was Resized
+	bool ean; 
+
 	Global() {
 	    xres = 400;
 	    yres = 200;
@@ -170,7 +174,16 @@ void X11_wrapper::check_resize(XEvent *e)
 	if (xce.width != g.xres || xce.height != g.yres) {
 		//Window size did change.
 		reshape_window(xce.width, xce.height);
+
+
+		//	Sets the flag to true
+		// 	if the Window was Resized
+		g.ean = true; 
 	}
+	else {
+		g.ean = false; 
+	}
+	
 }
 //-----------------------------------------------------------------------------
 
@@ -267,9 +280,27 @@ void render()
 {
 	//
 	glClear(GL_COLOR_BUFFER_BIT);
+	
+	// If the Window Becomes Smaller than the Box
+	// Delete the Box
+	if (g.xres < 40) {
+		glColor3ub(255, 255, 255); 
+	}
+	else {
+		glColor3ub(255, 0, 0);
+	}
+
+	// If the window is smaller than 400
+	// Make the Box Red
+	if (g.xres < 400) {
+		glColor3ub(255, 0, 0);
+	}
+	else {
+		glColor3ub(100, 120, 220);
+	}
+
 	//draw the box
 	glPushMatrix();
-	glColor3ub(100, 120, 220);
 	glTranslatef(g.pos[0], g.pos[1], 0.0f);
 	glBegin(GL_QUADS);
 		glVertex2f(-g.w, -g.w);
@@ -278,7 +309,11 @@ void render()
 		glVertex2f( g.w, -g.w);
 	glEnd();
 	glPopMatrix();
+
+	//	Change the Color 
 }
+
+
 
 
 
